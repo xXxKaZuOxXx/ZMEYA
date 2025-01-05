@@ -10,6 +10,9 @@ namespace ZMEYA
     {
 
         SnakeGameplayState gameplayState = new SnakeGameplayState();
+        private bool newGamePending = false;
+        private int currLevel = 0;
+        ShowTextState showTextState = new ShowTextState(2f);
         public override ConsoleColor[] CreatePalette()
         {
             return
@@ -45,19 +48,45 @@ namespace ZMEYA
         }
         public override void Update(float deltaTime)
         {
-            if (currentState != gameplayState) GotoGameplay();
-            else if(currentState != null)
-            {
+            if (currentState != null && !currentState.IsDone())
                 return;
+            if (currentState == null || currentState == gameplayState && !gameplayState.gameOver)
+            {
+                GotoNextLevel();
             }
+            else if (currentState == gameplayState && gameplayState.gameOver)
+            {
+                GotoGameOver();
+            }
+            else if (currentState != gameplayState && newGamePending)
+            {
+                GotoNextLevel();
+            }
+            else if (currentState != gameplayState && newGamePending == false) GotoGameplay();
+            
+        }
+        private void GotoGameOver()
+        {
+            currLevel = 0;
+            newGamePending = true;
+            showTextState.text = $"Game Over!";
+            ChangeState(showTextState);
         }
         public void GotoGameplay()
         {
+            gameplayState.level = currLevel;
             ChangeState(gameplayState);
             gameplayState.Reset();
             gameplayState.fieldWidth = screenWidth;
             gameplayState.fieldHeight = screenHeight;
             ChangeState(gameplayState);
+        }
+        private void GotoNextLevel()
+        {
+            currLevel++;
+            newGamePending = false;
+            showTextState.text = $"Level {currLevel}";
+            ChangeState(showTextState);
         }
     }
 }

@@ -3,7 +3,7 @@ using ZMEYA;
 
 internal class Program
 {
-    const float targetFrameTime = 1f / 50f;
+    const float targetFrameTime = 1f / 90f;
     static void Main(string[] args)
     {
         
