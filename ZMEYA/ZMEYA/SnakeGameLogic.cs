@@ -10,7 +10,16 @@ namespace ZMEYA
     {
 
         SnakeGameplayState gameplayState = new SnakeGameplayState();
-
+        public override ConsoleColor[] CreatePalette()
+        {
+            return
+            [
+                ConsoleColor.Green,
+                ConsoleColor.Red,
+                ConsoleColor.White,
+                ConsoleColor.Blue,
+            ];
+        }
         public override void OnArrowUp()
         {
             if (currentState != gameplayState) return;
@@ -36,12 +45,19 @@ namespace ZMEYA
         }
         public override void Update(float deltaTime)
         {
-            gameplayState.Update(deltaTime);
+            if (currentState != gameplayState) GotoGameplay();
+            else if(currentState != null)
+            {
+                return;
+            }
         }
         public void GotoGameplay()
         {
             ChangeState(gameplayState);
             gameplayState.Reset();
+            gameplayState.fieldWidth = screenWidth;
+            gameplayState.fieldHeight = screenHeight;
+            ChangeState(gameplayState);
         }
     }
 }
